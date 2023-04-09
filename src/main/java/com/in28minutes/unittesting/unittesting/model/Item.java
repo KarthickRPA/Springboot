@@ -1,58 +1,52 @@
 package com.in28minutes.unittesting.unittesting.model;
 
-// Change from javax to jakarta
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Transient;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "item")
 public class Item {
-
 	@Id
+	@Column(name = "id")
 	private int id;
-	private String name;
+	@Column(name = "vendor")
+	private String vendor;
+	@Column(name = "Model")
+	private String model;
 	private int price;
-	private int quantity;
 
-	@Transient
-	private int value;
+	public Item() {
 
-	protected Item() {
-		
 	}
-	
-	public Item(int id, String name, int price, int quantity) {
+
+	public Item(int id, String vendor, String model, int price) {
 		this.id = id;
-		this.name = name;
+		this.vendor = vendor;
+		this.model = model;
 		this.price = price;
-		this.quantity = quantity;
 	}
 
 	public int getId() {
 		return id;
 	}
 
-	public String getName() {
-		return name;
+	public String getVendor() {
+		return vendor;
+	}
+
+	public String getModel() {
+		return model;
 	}
 
 	public int getPrice() {
 		return price;
 	}
 
-	public int getQuantity() {
-		return quantity;
-	}
 
-	public int getValue() {
-		return value;
-	}
-
-	public void setValue(int value) {
-		this.value = value;
-	}
 
 	public String toString() {
-		return String.format("Item[%d, %s, %d, %d]", id, name, price, quantity);
+		return String.format("Item[%d, %s, %d, %d]", id, vendor, model, price);
 	}
 }

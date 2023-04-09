@@ -1,36 +1,89 @@
 package com.in28minutes.unittesting.unittesting.business;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import com.in28minutes.unittesting.unittesting.data.ItemRepository;
 import com.in28minutes.unittesting.unittesting.model.Item;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest(classes = {ItemBusinessServiceTest.class})
 public class ItemBusinessServiceTest {
 
-	@InjectMocks
-	private ItemBusinessService business;
-
 	@Mock
-	private ItemRepository repository;
-
+	ItemRepository repository;
+	
+	@InjectMocks
+	ItemBusinessService business;
+	
+	public List<Item> mycards;
+	
 	@Test
-	public void retrieveAllItems_basic() {
-		when(repository.findAll()).thenReturn(Arrays.asList(new Item(2,"Item2",10,10),
-				new Item(3,"Item3",20,20)));
-		List<Item> items = business.retrieveAllItems();
+	@Order(1)
+	public void Test_getallCards() {
 		
-		assertEquals(100, items.get(0).getValue());
-		assertEquals(400, items.get(1).getValue());
+		List<Item>mycards = new ArrayList<Item >();
+		
+		mycards.add(new Item(1,"NVIDIA","GTX1650",16000));
+		mycards.add(new Item(2,"NVIDIA","GTX1060",19000));
+		mycards.add(new Item(3,"AMD","RX7000",18000));
+		
+		when(repository.findAll()).thenReturn(mycards);
+		business.getallCards().size();
+		assertEquals(3, business.getallCards().size());
+	}
+	@Test
+	@Order(2)
+	public void Test_getcardbyid() {
+
+		List<Item>mycards = new ArrayList<Item >();
+		
+		mycards.add(new Item(1,"NVIDIA","GTX1650",16000));
+		mycards.add(new Item(2,"NVIDIA","GTX1060",19000));
+		mycards.add(new Item(3,"AMD","RX7000",18000));
+		
+		int cardid = 1;
+		when(repository.findAll()).thenReturn(mycards);
+		
+		assertEquals(1, business.getcardbyid(cardid).getId());
+	}
+	@Test
+	@Order(3)
+	public void Test_getcardbyName() {
+        List<Item>mycards = new ArrayList<Item >();
+		
+		mycards.add(new Item(1,"NVIDIA","GTX1650",16000));
+		mycards.add(new Item(2,"NVIDIA","GTX1060",19000));
+		mycards.add(new Item(3,"AMD","RX7000",18000));
+		
+		String model = "GTX1060";
+		
+		when(repository.findAll()).thenReturn(mycards);
+		
+		
+		assertEquals(model, business.getcardbyName(model).getModel());
+
+	}
+	@Test
+	@Order(4)
+	public void Test_deletecard() {
+		Item item = new Item(3,"AMD","RX7000",18000);
+		
+	   business.deleteCardbyid(item);
+	   verify(repository,times(1)).delete(item);
+
 	}
 }

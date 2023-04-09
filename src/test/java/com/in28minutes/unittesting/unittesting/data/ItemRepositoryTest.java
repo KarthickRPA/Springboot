@@ -24,9 +24,9 @@ public class ItemRepositoryTest {
 
 	@Test
 	public void testFindOne() {
-		Item item = repository.findById(10001).get();
+		Item item = repository.findById(41000).get();
 		
-		assertEquals("Item1",item.getName());
+		assertEquals("Item1",item.getPrice());
 	}
 
 }

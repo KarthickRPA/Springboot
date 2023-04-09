@@ -14,9 +14,9 @@ public class JsonPathTest {
 	@Test
 	public void learning() {
 		String responseFromService = "[" + 
-				"{\"id\":10000, \"name\":\"Pencil\", \"quantity\":5}," + 
-				"{\"id\":10001, \"name\":\"Pen\", \"quantity\":15}," + 
-				"{\"id\":10002, \"name\":\"Eraser\", \"quantity\":10}" + 
+				"{\"id\":1, \"name\":\"NVIDIA\", \"model\":RTX3060 \"price\":\35000}," + 
+				"{\"id\":2, \"name\":\"NVIDIA\", \"model\":RTX3080 \"price\":89000},"  + 
+				"{\"id\":3, \"name\":\"AMD\", \"model\":RX6700 \"price\":41000}" + 
 				"]";
 		
 		DocumentContext context = JsonPath.parse(responseFromService);
@@ -26,7 +26,7 @@ public class JsonPathTest {
 		
 		List<Integer> ids = context.read("$..id");
 
-		assertThat(ids).containsExactly(10000,10001,10002);
+		assertThat(ids).containsExactly(1,2,3);
 		
 		System.out.println(context.read("$.[1]").toString());
 		System.out.println(context.read("$.[0:2]").toString());

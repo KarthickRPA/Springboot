@@ -4,13 +4,23 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
+import org.assertj.core.internal.Classes;
+import org.junit.jupiter.api.ClassOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
@@ -18,83 +28,37 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.in28minutes.unittesting.unittesting.business.ItemBusinessService;
 import com.in28minutes.unittesting.unittesting.model.Item;
-
-@WebMvcTest(ItemController.class)
+@TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
+@SpringBootTest(classes = {ItemControllerTest.class})
 public class ItemControllerTest {
-	
-	@Autowired
-	private MockMvc mockMvc;
-	
-	@MockBean
-	private ItemBusinessService businessService;
-	
-	@Test
-	public void dummyItem_basic() throws Exception {
-		
-		RequestBuilder request = MockMvcRequestBuilders
-				.get("/dummy-item")
-				.accept(MediaType.APPLICATION_JSON);
-		
-		MvcResult result = mockMvc.perform(request)
-				.andExpect(status().isOk())
-				.andExpect(content().json("{\"id\": 1,\"name\":\"Ball\",\"price\":10,\"quantity\":100}"))
-				.andReturn();
-		//JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-		
-	}
 
+	@Mock
+	
+	ItemBusinessService service;
+	
+	@InjectMocks
+	
+	ItemController controller;
+	
+	List<Item> cards;
+	
+	Item item;
+	
 	@Test
-	public void itemFromBusinessService_basic() throws Exception {
-		when(businessService.retreiveHardcodedItem()).thenReturn(
-				new Item(2,"Item2",10,10));
+	@Order(1)
+	public void Test_getallcards() {
+		List<Item> cards = new ArrayList<Item>();
+		cards.add(new Item(1,"NVIDIA","GT610",4444));
+		cards.add(new Item(2,"AMD","R6000",7744));
+		cards.add(new Item(3,"GALAX","GT730",8900));
+
+		when(service.getallCards()).thenReturn(cards);
 		
-		RequestBuilder request = MockMvcRequestBuilders
-				.get("/item-from-business-service")
-				.accept(MediaType.APPLICATION_JSON);
-		
-		MvcResult result = mockMvc.perform(request)
-				.andExpect(status().isOk())
-				.andExpect(content().json("{id:2,name:Item2,price:10}"))
-				.andReturn();
-		//JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
+		List<Item> res = controller.getallCards();
 		
 	}
 	
-	@Test
-	public void retrieveAllItems_basic() throws Exception {
-		when(businessService.retrieveAllItems()).thenReturn(
-				Arrays.asList(new Item(2,"Item2",10,10),
-						new Item(3,"Item3",20,20))
-				);
-		
-		RequestBuilder request = MockMvcRequestBuilders
-				.get("/all-items-from-database")
-				.accept(MediaType.APPLICATION_JSON);
-		
-		MvcResult result = mockMvc.perform(request)
-				.andExpect(status().isOk())
-				.andExpect(content().json("[{id:3,name:Item3,price:20}, {id:2,name:Item2,price:10}]"))
-				.andReturn();
-		//JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-		
-	}
-
-	@Test
-	public void retrieveAllItems_noitems() throws Exception {
-		when(businessService.retrieveAllItems()).thenReturn(
-				Arrays.asList()
-				);
-		
-		RequestBuilder request = MockMvcRequestBuilders
-				.get("/all-items-from-database")
-				.accept(MediaType.APPLICATION_JSON);
-		
-		MvcResult result = mockMvc.perform(request)
-				.andExpect(status().isOk())
-				.andExpect(content().json("[]"))
-				.andReturn();
-		//JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
-		
-	}
-
+	
+	
+	
 }

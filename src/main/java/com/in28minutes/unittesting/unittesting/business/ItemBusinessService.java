@@ -4,28 +4,51 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.in28minutes.unittesting.unittesting.data.ItemRepository;
 import com.in28minutes.unittesting.unittesting.model.Item;
 
 @Component
+@Service
 public class ItemBusinessService {
-	
+
 	@Autowired
-	private ItemRepository repository;
-	
-	public Item retreiveHardcodedItem() {
-		return new Item(1, "Ball", 10, 100);
+	ItemRepository repository;
+
+	public List<Item> getallCards() {
+
+		return repository.findAll();
 	}
-	
-	public List<Item> retrieveAllItems() {
-		List<Item> items = repository.findAll();
-		
-		for(Item item:items) {
-			item.setValue(item.getPrice() * item.getQuantity());
+
+	public Item getcardbyid(int id) {
+		List<Item> cards = repository.findAll();
+		Item item = null;
+		for (Item i : cards) {
+			if (i.getId() == id) {
+				item = i;
+
+			}
 		}
-		
-		return items;	
+		return item;
+
 	}
-	
+
+	public Item getcardbyName(String model) {
+		List<Item> cards = repository.findAll();
+		Item item = null;
+		for (Item i : cards) {
+			if (i.getModel().equalsIgnoreCase(model)) {
+				item = i;
+
+			}
+		}
+		return item;
+	}
+
+	public void deleteCardbyid(Item item) {
+		repository.delete(item);
+		System.out.println("Card Deleted");
+
+	}
 }
